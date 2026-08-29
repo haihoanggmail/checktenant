@@ -1134,14 +1134,6 @@
         </button>
 
 
-        <button
-            class="btn-secondary"
-            onclick="saveSearchHistory()"
-        >
-
-            ⭐ Lưu kết quả
-
-        </button>
 
     </div>
 
@@ -2386,99 +2378,6 @@ function toggleRawJson() {
 }
 
 
-
-/* =========================================================
-   SAVE SEARCH HISTORY
-========================================================= */
-
-function saveSearchHistory() {
-
-
-    if (
-        !currentTenantInfo
-    ) {
-
-        return;
-
-    }
-
-
-    let history =
-        [];
-
-
-    try {
-
-
-        history =
-            JSON.parse(
-
-                localStorage.getItem(
-                    "hachihiTenantHistory"
-                )
-
-            ) || [];
-
-
-    }
-
-    catch {
-
-        history =
-            [];
-
-    }
-
-
-    history.unshift(
-
-        {
-
-            date:
-                new Date()
-                    .toISOString(),
-
-            domain:
-                currentTenantInfo.domain,
-
-            tenantId:
-                currentTenantInfo.tenantId,
-
-            region:
-                currentTenantInfo.azureInstance
-
-        }
-
-    );
-
-
-    /*
-        Chỉ giữ 50 kết quả gần nhất
-    */
-
-    history =
-        history.slice(
-            0,
-            50
-        );
-
-
-    localStorage.setItem(
-
-        "hachihiTenantHistory",
-
-        JSON.stringify(
-            history
-        )
-
-    );
-
-
-    alert(
-        "Đã lưu kết quả trên trình duyệt này!"
-    );
-
-}
 
 
 
