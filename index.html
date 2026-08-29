@@ -1,291 +1,2512 @@
 <!DOCTYPE html>
+
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kiểm Tra Tenant Microsoft 365 - Hachihi</title>
-    <!--  Font Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --hachihi-primary: #0052cc;
-            --hachihi-primary-hover: #0041a3;
-            --hachihi-accent: #0066ff;
-            --hachihi-bg: #f4f7fa;
-            --hachihi-card-bg: #ffffff;
-            --hachihi-text: #172b4d;
-            --hachihi-subtext: #5e6c84;
-            --hachihi-success: #36b37e;
-            --hachihi-danger: #ff5630;
-            --hachihi-border: #dfe1e6;
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Microsoft Tenant Inspector - Hachihi</title>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+>
+
+<style>
+
+    :root {
+        --primary: #0052cc;
+        --primary-hover: #0041a3;
+
+        --success: #00875a;
+        --success-bg: #e3fcef;
+
+        --danger: #de350b;
+        --danger-bg: #ffebe6;
+
+        --warning: #ff8b00;
+        --warning-bg: #fff7d6;
+
+        --info: #0747a6;
+        --info-bg: #deebff;
+
+        --bg: #f4f7fb;
+        --card: #ffffff;
+
+        --text: #172b4d;
+        --subtext: #5e6c84;
+
+        --border: #dfe1e6;
+
+        --code-bg: #f4f5f7;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+
+        font-family:
+            'Inter',
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            Roboto,
+            sans-serif;
+
+        background:
+            linear-gradient(
+                180deg,
+                #f4f7fb 0%,
+                #edf2f8 100%
+            );
+
+        color: var(--text);
+
+        min-height: 100vh;
+    }
+
+    .page {
+
+        width: 100%;
+
+        max-width: 1050px;
+
+        margin: auto;
+
+        padding:
+            35px
+            20px
+            60px;
+    }
+
+
+    /* =====================================================
+       HEADER
+    ===================================================== */
+
+    .header {
+
+        text-align: center;
+
+        margin-bottom: 28px;
+
+        padding-bottom: 24px;
+
+        border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        gap: 10px;
+
+        font-size: 26px;
+
+        font-weight: 800;
+
+        letter-spacing: 0.5px;
+
+        color: var(--text);
+
+        margin-bottom: 14px;
+    }
+
+    .title {
+
+        font-size: 28px;
+
+        font-weight: 800;
+
+        margin: 0;
+
+        color: var(--text);
+    }
+
+    .subtitle {
+
+        margin-top: 10px;
+
+        color: var(--subtext);
+
+        font-size: 14px;
+
+        line-height: 1.6;
+    }
+
+
+    /* =====================================================
+       SEARCH CARD
+    ===================================================== */
+
+    .search-card {
+
+        background: var(--card);
+
+        border:
+            1px
+            solid
+            var(--border);
+
+        border-radius: 16px;
+
+        padding: 25px;
+
+        box-shadow:
+            0 10px 35px
+            rgba(9, 30, 66, 0.08);
+    }
+
+    .label {
+
+        display: block;
+
+        font-size: 13px;
+
+        font-weight: 700;
+
+        margin-bottom: 9px;
+
+        text-transform: uppercase;
+
+        letter-spacing: 0.4px;
+    }
+
+    .search-row {
+
+        display: flex;
+
+        gap: 10px;
+    }
+
+    #tenantInput {
+
+        flex: 1;
+
+        min-width: 0;
+
+        height: 48px;
+
+        padding:
+            0
+            16px;
+
+        font-size: 15px;
+
+        border:
+            2px
+            solid
+            var(--border);
+
+        border-radius: 9px;
+
+        outline: none;
+
+        transition:
+            border
+            .2s,
+            box-shadow
+            .2s;
+    }
+
+    #tenantInput:focus {
+
+        border-color:
+            var(--primary);
+
+        box-shadow:
+            0
+            0
+            0
+            4px
+            rgba(0,82,204,.1);
+    }
+
+    .btn {
+
+        height: 48px;
+
+        padding:
+            0
+            22px;
+
+        border: none;
+
+        border-radius: 9px;
+
+        cursor: pointer;
+
+        font-size: 14px;
+
+        font-weight: 700;
+
+        background:
+            var(--primary);
+
+        color: white;
+
+        transition:
+            .2s;
+    }
+
+    .btn:hover {
+
+        background:
+            var(--primary-hover);
+    }
+
+    .btn:disabled {
+
+        opacity: .6;
+
+        cursor:
+            not-allowed;
+    }
+
+    .hint {
+
+        margin-top: 10px;
+
+        color: var(--subtext);
+
+        font-size: 12px;
+
+        line-height: 1.6;
+    }
+
+
+    /* =====================================================
+       LOADING
+    ===================================================== */
+
+    .loading {
+
+        display: none;
+
+        text-align: center;
+
+        margin:
+            25px
+            0;
+
+        color:
+            var(--primary);
+
+        font-weight: 600;
+    }
+
+    .spinner {
+
+        width: 28px;
+
+        height: 28px;
+
+        border:
+            3px
+            solid
+            #dfe8f8;
+
+        border-top-color:
+            var(--primary);
+
+        border-radius:
+            50%;
+
+        margin:
+            0
+            auto
+            10px;
+
+        animation:
+            spin
+            .8s
+            linear
+            infinite;
+    }
+
+    @keyframes spin {
+
+        to {
+
+            transform:
+                rotate(360deg);
+        }
+    }
+
+
+    /* =====================================================
+       STATUS CARD
+    ===================================================== */
+
+    .status-card {
+
+        display: none;
+
+        margin-top: 22px;
+
+        border-radius: 14px;
+
+        padding: 22px;
+    }
+
+    .status-card.success {
+
+        background:
+            var(--success-bg);
+
+        border:
+            1px
+            solid
+            #abf5d1;
+    }
+
+    .status-card.error {
+
+        background:
+            var(--danger-bg);
+
+        border:
+            1px
+            solid
+            #ffbdad;
+    }
+
+    .status-title {
+
+        font-size: 20px;
+
+        font-weight: 800;
+
+        margin-bottom: 8px;
+    }
+
+    .status-message {
+
+        font-size: 14px;
+
+        line-height: 1.6;
+    }
+
+
+    /* =====================================================
+       RESULT
+    ===================================================== */
+
+    .result-container {
+
+        display: none;
+
+        margin-top: 22px;
+    }
+
+    .section {
+
+        background:
+            var(--card);
+
+        border:
+            1px
+            solid
+            var(--border);
+
+        border-radius:
+            14px;
+
+        margin-bottom:
+            18px;
+
+        overflow:
+            hidden;
+    }
+
+    .section-title {
+
+        padding:
+            15px
+            20px;
+
+        font-weight:
+            800;
+
+        font-size:
+            15px;
+
+        background:
+            #f7f9fc;
+
+        border-bottom:
+            1px
+            solid
+            var(--border);
+    }
+
+    table {
+
+        width: 100%;
+
+        border-collapse:
+            collapse;
+    }
+
+    td {
+
+        padding:
+            14px
+            20px;
+
+        border-bottom:
+            1px
+            solid
+            #edf0f3;
+
+        vertical-align:
+            top;
+    }
+
+    tr:last-child td {
+
+        border-bottom:
+            none;
+    }
+
+    td:first-child {
+
+        width: 34%;
+
+        color:
+            var(--subtext);
+
+        font-size:
+            13px;
+
+        font-weight:
+            600;
+    }
+
+    td:last-child {
+
+        word-break:
+            break-word;
+
+        font-size:
+            14px;
+    }
+
+
+    /* =====================================================
+       COPY BUTTON
+    ===================================================== */
+
+    .copy-btn {
+
+        margin-left:
+            8px;
+
+        border:
+            1px
+            solid
+            var(--border);
+
+        background:
+            white;
+
+        border-radius:
+            6px;
+
+        padding:
+            4px
+            8px;
+
+        cursor:
+            pointer;
+
+        font-size:
+            12px;
+
+        color:
+            var(--primary);
+    }
+
+    .copy-btn:hover {
+
+        background:
+            #f4f7fb;
+    }
+
+
+    /* =====================================================
+       BADGE
+    ===================================================== */
+
+    .badge {
+
+        display:
+            inline-block;
+
+        padding:
+            5px
+            10px;
+
+        border-radius:
+            20px;
+
+        font-size:
+            12px;
+
+        font-weight:
+            700;
+    }
+
+    .badge.success {
+
+        background:
+            var(--success-bg);
+
+        color:
+            var(--success);
+    }
+
+    .badge.info {
+
+        background:
+            var(--info-bg);
+
+        color:
+            var(--info);
+    }
+
+
+    /* =====================================================
+       CODE
+    ===================================================== */
+
+    code {
+
+        background:
+            var(--code-bg);
+
+        padding:
+            4px
+            7px;
+
+        border-radius:
+            5px;
+
+        font-size:
+            12px;
+
+        word-break:
+            break-all;
+    }
+
+
+    /* =====================================================
+       RAW JSON
+    ===================================================== */
+
+    .json-box {
+
+        margin: 0;
+
+        padding: 20px;
+
+        background:
+            #172b4d;
+
+        color:
+            #dfe1e6;
+
+        overflow:
+            auto;
+
+        max-height:
+            500px;
+
+        font-family:
+            Consolas,
+            Monaco,
+            monospace;
+
+        font-size:
+            12px;
+
+        line-height:
+            1.6;
+    }
+
+
+    /* =====================================================
+       ACTIONS
+    ===================================================== */
+
+    .actions {
+
+        display:
+            flex;
+
+        gap:
+            10px;
+
+        flex-wrap:
+            wrap;
+
+        margin-top:
+            15px;
+    }
+
+    .btn-secondary {
+
+        padding:
+            10px
+            16px;
+
+        border:
+            1px
+            solid
+            var(--border);
+
+        background:
+            white;
+
+        color:
+            var(--text);
+
+        border-radius:
+            8px;
+
+        cursor:
+            pointer;
+
+        font-weight:
+            600;
+    }
+
+    .btn-secondary:hover {
+
+        background:
+            #f4f7fb;
+    }
+
+
+    /* =====================================================
+       FOOTER
+    ===================================================== */
+
+    .footer {
+
+        text-align:
+            center;
+
+        margin-top:
+            30px;
+
+        color:
+            var(--subtext);
+
+        font-size:
+            12px;
+    }
+
+    .footer a {
+
+        color:
+            var(--primary);
+
+        text-decoration:
+            none;
+
+        font-weight:
+            700;
+    }
+
+
+    /* =====================================================
+       MOBILE
+    ===================================================== */
+
+    @media(max-width: 650px) {
+
+        .page {
+
+            padding:
+                20px
+                12px;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        .title {
+
+            font-size:
+                22px;
         }
 
-        body {
-            background-color: var(--hachihi-bg);
-            color: var(--hachihi-text);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
+        .search-row {
+
+            flex-direction:
+                column;
         }
 
-        .container {
-            width: 100%;
-            max-width: 520px;
-            background: var(--hachihi-card-bg);
-            border-radius: 12px;
-            padding: 40px 32px;
-            box-shadow: 0 10px 25px rgba(0, 82, 204, 0.08);
-            border: 1px solid var(--hachihi-border);
-            text-align: center;
-        }
-
-        /* Logo Hachihi */
-        .logo-container {
-            margin-bottom: 24px;
-        }
-
-        .logo-container img {
-            max-height: 55px;
-            max-width: 220px;
-            object-fit: contain;
-        }
-
-        /* Header */
-        h1 {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--hachihi-primary);
-            margin-bottom: 6px;
-        }
-
-        p.subtitle {
-            font-size: 14px;
-            color: var(--hachihi-subtext);
-            margin-bottom: 28px;
-        }
-
-        /* Form Input */
-        .input-group {
-            text-align: left;
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--hachihi-text);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .input-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 12px 16px;
-            font-size: 15px;
-            border: 2px solid var(--hachihi-border);
-            border-radius: 8px;
-            outline: none;
-            transition: all 0.2s ease;
-            color: var(--hachihi-text);
-            background: #fafbfc;
-        }
-
-        input[type="text"]:focus {
-            border-color: var(--hachihi-accent);
-            background: #ffffff;
-            box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.15);
-        }
-
-        .suffix {
-            position: absolute;
-            right: 14px;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--hachihi-subtext);
-            pointer-events: none;
-        }
-
-        .hint {
-            font-size: 12px;
-            color: var(--hachihi-subtext);
-            margin-top: 6px;
-        }
-
-        /* Button */
         .btn {
-            width: 100%;
-            background-color: var(--hachihi-primary);
-            color: #ffffff;
-            border: none;
-            padding: 13px;
-            font-size: 15px;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.2s ease, transform 0.1s ease;
-            box-shadow: 0 4px 12px rgba(0, 82, 204, 0.2);
+
+            width:
+                100%;
         }
 
-        .btn:hover {
-            background-color: var(--hachihi-primary-hover);
+        td:first-child {
+
+            width:
+                40%;
         }
 
-        .btn:active {
-            transform: scale(0.99);
-        }
+        td {
 
-        .btn:disabled {
-            background-color: #a5adba;
-            box-shadow: none;
-            cursor: not-allowed;
+            padding:
+                12px;
         }
+    }
 
-        /* Result Card */
-        .result-card {
-            margin-top: 24px;
-            padding: 18px;
-            border-radius: 8px;
-            text-align: left;
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
+</style>
 
-        .result-card.available {
-            background-color: #e3fcef;
-            border: 1px solid #abf5d1;
-            color: #006644;
-        }
-
-        .result-card.not-available {
-            background-color: #ffebe6;
-            border: 1px solid #ffbdad;
-            color: #bf2600;
-        }
-
-        .result-title {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .result-detail {
-            font-size: 13px;
-            opacity: 0.9;
-            word-break: break-all;
-            margin-top: 4px;
-        }
-
-        .footer {
-            margin-top: 30px;
-            font-size: 12px;
-            color: var(--hachihi-subtext);
-        }
-
-        .footer a {
-            color: var(--hachihi-primary);
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
 </head>
+
 <body>
 
-<div class="container">
-    <!-- Logo Google Drive Hachihi -->
-    <div class="logo-container">
-        <img src="https://lh3.googleusercontent.com/d/1z8McGUxFssJJy7iFD0jaBeC0LfIGuDcf" alt="Hachihi Logo" onerror="this.onerror=null; this.src='https://hachihi.vn/logo.png';">
+<div class="page">
+
+<!-- HEADER -->
+
+<div class="header">
+
+    <div class="logo">
+	<image src="https://lh3.googleusercontent.com/d/1z8McGUxFssJJy7iFD0jaBeC0LfIGuDcf" width="150" height=150"></image>
+
+
+
+
     </div>
 
-    <h1>Microsoft 365</h1>
-    <p class="subtitle">Kiểm tra tính khả dụng của Tenant Name Microsoft</p>
+    <h1 class="title">
+			        <svg width="34" height="34" viewBox="0 -5 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M17 1.5 L31 6.5 V16.5 C31 24.8 25.2 30.8 17 32.5 C8.8 30.8 3 24.8 3 16.5 V6.5 L17 1.5 Z" fill="#0052cc"/>
+            <path d="M17 1.5 L31 6.5 V16.5 C31 24.8 25.2 30.8 17 32.5 V1.5 Z" fill="#0041a3"/>
+            <path d="M11 17.2 L15 21.2 L23.5 12.2" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+        Microsoft Tenant check
+    </h1>
 
-    <div class="input-group">
-        <label for="tenantInput">Tên Tenant muốn kiểm tra</label>
-        <div class="input-wrapper">
-            <input type="text" id="tenantInput" placeholder="nhap-ten-tenant" onkeypress="if(event.key==='Enter') checkTenant()">
+    <div class="subtitle">
+
+        Kiểm tra Microsoft 365 / Microsoft Entra Tenant
+
+    </div>
+
+</div>
+
+
+
+<!-- SEARCH -->
+
+<div class="search-card">
+
+    <label
+        class="label"
+        for="tenantInput"
+    >
+
+        Tenant hoặc Domain Microsoft
+
+    </label>
+
+
+    <div class="search-row">
+
+        <input
+            type="text"
+            id="tenantInput"
+            placeholder="Ví dụ: contoso hoặc contoso.onmicrosoft.com"
+            autocomplete="off"
+        >
+
+
+        <button
+            class="btn"
+            id="checkBtn"
+            onclick="checkTenant()"
+        >
+
+            Kiểm Tra
+
+        </button>
+
+    </div>
+
+
+    <div class="hint">
+
+        Có thể nhập:
+        <b>contoso</b>,
+        <b>contoso.onmicrosoft.com</b>
+
+    </div>
+
+</div>
+
+
+
+<!-- LOADING -->
+
+<div
+    id="loading"
+    class="loading"
+>
+
+    <div class="spinner"></div>
+
+    Đang kết nối Microsoft và đọc Tenant Metadata...
+
+</div>
+
+
+
+<!-- STATUS -->
+
+<div
+    id="statusCard"
+    class="status-card"
+>
+
+    <div
+        id="statusTitle"
+        class="status-title"
+    ></div>
+
+    <div
+        id="statusMessage"
+        class="status-message"
+    ></div>
+
+</div>
+
+
+
+<!-- RESULT -->
+
+<div
+    id="resultContainer"
+    class="result-container"
+>
+
+
+
+    <!-- BASIC -->
+
+    <div class="section">
+
+        <div class="section-title">
+
+            🔎 Thông tin Tenant
+
         </div>
-        <div class="hint">Chỉ sử dụng chữ cái không dấu và chữ số. Không khoảng trắng, Ví dụ nhập "hangchinhhieu" để kiểm tra hangchinhhieu.onmicrosoft.com.</div>
+
+
+        <table>
+
+            <tr>
+
+                <td>Status</td>
+
+                <td>
+
+                    <span class="badge success">
+
+                        Tenant Found
+
+                    </span>
+
+                </td>
+
+            </tr>
+
+
+            <tr>
+
+                <td>Search String</td>
+
+                <td
+                    id="tenantName"
+                ></td>
+
+            </tr>
+
+
+            <tr>
+
+                <td>Tenant ID</td>
+
+                <td>
+
+                    <code
+                        id="tenantId"
+                    ></code>
+
+                    <button
+                        class="copy-btn"
+                        onclick="copyTenantId()"
+                    >
+
+                        📋 Copy
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+
+            <tr>
+
+                <td>Issuer</td>
+
+                <td>
+
+                    <code
+                        id="issuer"
+                    ></code>
+
+                </td>
+
+            </tr>
+
+
+            <tr>
+
+                <td>Cloud Instance</td>
+
+                <td
+                    id="cloudInstance"
+                ></td>
+
+            </tr>
+
+        </table>
+
     </div>
 
-    <button class="btn" id="checkBtn" onclick="checkTenant()">Kiểm Tra Ngay</button>
 
-    <div id="resultCard" class="result-card">
-        <div class="result-title" id="resStatus"></div>
-        <div class="result-detail" id="resEmail"></div>
-        <div class="result-detail" id="resSharepoint"></div>
+
+    <!-- ENDPOINTS -->
+
+    <div class="section">
+
+        <div class="section-title">
+
+            🔐 Microsoft Authentication Endpoints
+
+        </div>
+
+
+        <table>
+
+            <tr>
+
+                <td>Authorization Endpoint</td>
+
+                <td
+                    id="authorizationEndpoint"
+                ></td>
+
+            </tr>
+
+
+            <tr>
+
+                <td>Token Endpoint</td>
+
+                <td
+                    id="tokenEndpoint"
+                ></td>
+
+            </tr>
+
+
+            <tr>
+
+                <td>Device Authorization</td>
+
+                <td
+                    id="deviceAuthorizationEndpoint"
+                ></td>
+
+            </tr>
+
+
+            <tr>
+
+                <td>UserInfo Endpoint</td>
+
+                <td
+                    id="userInfoEndpoint"
+                ></td>
+
+            </tr>
+
+
+            <tr>
+
+                <td>JWKS URI</td>
+
+                <td
+                    id="jwksUri"
+                ></td>
+
+            </tr>
+
+
+            <tr>
+
+                <td>End Session Endpoint</td>
+
+                <td
+                    id="endSessionEndpoint"
+                ></td>
+
+            </tr>
+
+
+            <tr>
+
+                <td>Check Session</td>
+
+                <td
+                    id="checkSession"
+                ></td>
+
+            </tr>
+
+
+            <tr>
+
+                <td>Kerberos Endpoint</td>
+
+                <td
+                    id="kerberosEndpoint"
+                ></td>
+
+            </tr>
+
+        </table>
+
     </div>
 
-    <div class="footer">
-        Cung cấp bởi <a href="https://hachihi.vn" target="_blank">Hachihi.vn</a>
+
+
+    <!-- ACTIONS -->
+
+    <div class="actions">
+
+        <button
+            class="btn-secondary"
+            onclick="copyAllResults()"
+        >
+
+            📋 Copy toàn bộ kết quả
+
+        </button>
+
+
+        <button
+            class="btn-secondary"
+            onclick="toggleRawJson()"
+        >
+
+            {} Xem Raw JSON
+
+        </button>
+
+
+        <button
+            class="btn-secondary"
+            onclick="saveSearchHistory()"
+        >
+
+            ⭐ Lưu kết quả
+
+        </button>
+
     </div>
+
+
+
+    <!-- RAW JSON -->
+
+    <div
+        id="rawJsonSection"
+        class="section"
+        style="display:none;margin-top:18px;"
+    >
+
+        <div class="section-title">
+
+            {} Raw Microsoft OpenID Configuration
+
+        </div>
+
+
+        <pre
+            id="rawJson"
+            class="json-box"
+        ></pre>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- FOOTER -->
+
+<div class="footer">
+
+    Support by     <a
+        href="https://hachihi.vn"
+        target="_blank"
+    >
+
+        Hachihi.vn 0933842126
+
+    </a>
+	  -  09-1800-1944
+
+</div>
+
 </div>
 
 <script>
-    async function checkTenant() {
-        const input = document.getElementById('tenantInput');
-        const name = input.value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
 
-        if (!name) return;
 
-        const btn = document.getElementById('checkBtn');
-        btn.disabled = true;
-        btn.innerText = 'Đang kiểm tra...';
+/* =========================================================
+   GLOBAL
+========================================================= */
 
-        const url = `https://login.microsoftonline.com/${name}.onmicrosoft.com/v2.0/.well-known/openid-configuration`;
+let currentTenantData = null;
 
-        try {
-            const res = await fetch(url);
-            // HTTP status 400 có nghĩa là tenant chưa đăng ký (còn trống)
-            const isAvailable = (res.status === 400);
-            displayResult(name, isAvailable);
-        } catch (err) {
-            alert('Lỗi kết nối kiểm tra. Vui lòng thử lại!');
-        } finally {
-            btn.disabled = false;
-            btn.innerText = 'Kiểm Tra Ngay';
+let currentTenantInfo = null;
+
+
+
+/* =========================================================
+   ENTER KEY
+========================================================= */
+
+document
+    .getElementById("tenantInput")
+    .addEventListener(
+        "keypress",
+        function(event) {
+
+            if (event.key === "Enter") {
+
+                checkTenant();
+
+            }
+
         }
+    );
+
+
+
+/* =========================================================
+   NORMALIZE INPUT
+========================================================= */
+
+function normalizeTenantInput(value) {
+
+    value = value
+        .trim()
+        .toLowerCase();
+
+
+    if (!value) {
+
+        return null;
+
     }
 
-    function displayResult(name, isAvailable) {
-        const card = document.getElementById('resultCard');
-        card.style.display = 'block';
 
-        if (isAvailable) {
-            card.className = 'result-card available';
-            document.getElementById('resStatus').innerHTML = '✔ Tên này còn trống (Available)';
-        } else {
-            card.className = 'result-card not-available';
-            document.getElementById('resStatus').innerHTML = '✖ Tên đã được sử dụng (Not available)';
+    /*
+        Nếu người dùng dán URL Microsoft
+    */
+
+    value = value
+        .replace(
+            /^https?:\/\/login\.(microsoftonline\.com|microsoftonline\.us|partner\.microsoftonline\.cn|microsoftonline\.de)\//,
+            ""
+        );
+
+
+    /*
+        Nếu nhập email
+    */
+
+    if (value.includes("@")) {
+
+        value =
+            value.split("@").pop();
+
+    }
+
+
+    /*
+        Nếu URL còn path phía sau
+    */
+
+    value =
+        value.split("/")[0];
+
+
+    /*
+        Nếu chỉ nhập tên tenant
+    */
+
+    if (
+        !value.includes(".")
+    ) {
+
+        value =
+            value +
+            ".onmicrosoft.com";
+
+    }
+
+
+    return value;
+
+}
+
+
+
+/* =========================================================
+   GET LOOKUP URL
+========================================================= */
+
+function getLookupUrl(domain) {
+
+    let base =
+        "https://login.microsoftonline.com";
+
+
+    if (
+        domain.endsWith(".onmicrosoft.us")
+    ) {
+
+        base =
+            "https://login.microsoftonline.us";
+
+    }
+
+
+    if (
+        domain.endsWith(".onmschina.cn")
+    ) {
+
+        base =
+            "https://login.partner.microsoftonline.cn";
+
+    }
+
+
+    if (
+        domain.endsWith(".onmicrosoft.de")
+    ) {
+
+        base =
+            "https://login.microsoftonline.de";
+
+    }
+
+
+    return (
+        base +
+        "/" +
+        domain +
+        "/.well-known/openid-configuration"
+    );
+
+}
+
+
+
+/* =========================================================
+   CHECK TENANT
+========================================================= */
+
+async function checkTenant() {
+
+    const input =
+        document.getElementById(
+            "tenantInput"
+        );
+
+
+    const domain =
+        normalizeTenantInput(
+            input.value
+        );
+
+
+    if (!domain) {
+
+        input.focus();
+
+        return;
+
+    }
+
+
+    /*
+        Reset view
+    */
+
+    hideResult();
+
+
+    /*
+        UI Loading
+    */
+
+    const button =
+        document.getElementById(
+            "checkBtn"
+        );
+
+
+    button.disabled =
+        true;
+
+
+    button.innerHTML =
+        "Đang kiểm tra...";
+
+
+    document
+        .getElementById(
+            "loading"
+        )
+        .style.display =
+            "block";
+
+
+    const lookupUrl =
+        getLookupUrl(
+            domain
+        );
+
+
+    try {
+
+
+        const response =
+            await fetch(
+                lookupUrl,
+                {
+                    method: "GET"
+                }
+            );
+
+
+        /*
+            TENANT FOUND
+        */
+
+        if (
+            response.status === 200
+        ) {
+
+
+            const data =
+                await response.json();
+
+
+            currentTenantData =
+                data;
+
+
+            const tenantId =
+                extractTenantId(
+                    data
+                );
+
+
+            const region =
+                getTenantRegion(
+                    data
+                        .tenant_region_scope
+                );
+
+
+            const scope =
+                getTenantScope(
+                    data
+                );
+
+
+            currentTenantInfo =
+                {
+
+                    domain:
+                        domain,
+
+                    tenantId:
+                        tenantId,
+
+                    regionScope:
+                        data.tenant_region_scope ||
+                        "Unknown",
+
+                    regionSubScope:
+                        data.tenant_region_sub_scope ||
+                        "",
+
+                    azureInstance:
+                        region,
+
+                    tenantScope:
+                        scope,
+
+                    cloudInstance:
+                        data.cloud_instance_name ||
+                        "Unknown",
+
+                    issuer:
+                        data.issuer ||
+                        "",
+
+                    authorizationEndpoint:
+                        data.authorization_endpoint ||
+                        "",
+
+                    tokenEndpoint:
+                        data.token_endpoint ||
+                        "",
+
+                    deviceAuthorizationEndpoint:
+                        data.device_authorization_endpoint ||
+                        "",
+
+                    userInfoEndpoint:
+                        data.userinfo_endpoint ||
+                        "",
+
+                    jwksUri:
+                        data.jwks_uri ||
+                        "",
+
+                    endSessionEndpoint:
+                        data.end_session_endpoint ||
+                        "",
+
+                    checkSession:
+                        data.check_session_iframe ||
+                        "",
+
+                    kerberosEndpoint:
+                        data.kerberos_endpoint ||
+                        "",
+
+                    msGraph:
+                        data.msgraph_host ||
+                        "",
+
+                    cloudGraph:
+                        data.cloud_graph_host_name ||
+                        "",
+
+                    rbacUrl:
+                        data.rbac_url ||
+                        "",
+
+                    responseTypes:
+                        data.response_types_supported ||
+                        [],
+
+                    responseModes:
+                        data.response_modes_supported ||
+                        [],
+
+                    scopes:
+                        data.scopes_supported ||
+                        [],
+
+                    claims:
+                        data.claims_supported ||
+                        [],
+
+                    algorithms:
+                        data.id_token_signing_alg_values_supported ||
+                        [],
+
+                    tokenAuthMethods:
+                        data.token_endpoint_auth_methods_supported ||
+                        []
+
+                };
+
+
+            showTenantFound(
+                currentTenantInfo
+            );
+
+
         }
 
-        document.getElementById('resEmail').innerText = `• Email mặc định: you@${name}.onmicrosoft.com`;
-        document.getElementById('resSharepoint').innerText = `• Trang SharePoint: https://${name}.sharepoint.com`;
+
+        /*
+            TENANT NOT FOUND
+        */
+
+        else if (
+
+            response.status === 400 ||
+
+            response.status === 404
+
+        ) {
+
+
+            showTenantNotFound(
+                domain,
+                response.status
+            );
+
+        }
+
+
+        /*
+            OTHER ERROR
+        */
+
+        else {
+
+
+            showError(
+
+                "Microsoft trả về HTTP " +
+
+                response.status +
+
+                ". Không thể xác định chính xác trạng thái Tenant."
+
+            );
+
+        }
+
+
     }
+
+
+    catch (error) {
+
+
+        console.error(
+            error
+        );
+
+
+        showError(
+
+            "Không thể kết nối tới Microsoft. " +
+
+            "Có thể do mạng, CORS hoặc Microsoft tạm thời không phản hồi."
+
+        );
+
+    }
+
+
+    finally {
+
+
+        button.disabled =
+            false;
+
+
+        button.innerHTML =
+            "Kiểm Tra";
+
+
+        document
+            .getElementById(
+                "loading"
+            )
+            .style.display =
+                "none";
+
+    }
+
+}
+
+
+
+/* =========================================================
+   EXTRACT TENANT ID
+========================================================= */
+
+function extractTenantId(data) {
+
+
+    /*
+        Ưu tiên issuer
+    */
+
+    const sources = [
+
+        data.issuer,
+
+        data.authorization_endpoint,
+
+        data.token_endpoint,
+
+        data.jwks_uri
+
+    ];
+
+
+    const regex =
+        /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
+
+
+    for (
+        const source
+        of
+        sources
+    ) {
+
+
+        if (!source) {
+
+            continue;
+
+        }
+
+
+        const match =
+            source.match(
+                regex
+            );
+
+
+        if (match) {
+
+            return match[0];
+
+        }
+
+    }
+
+
+    return "Không tìm thấy";
+
+}
+
+
+
+/* =========================================================
+   REGION
+========================================================= */
+
+function getTenantRegion(scope) {
+
+
+    switch (
+        scope
+    ) {
+
+
+        case "USGov":
+
+            return
+                "Azure AD Government: Arlington";
+
+
+        case "USG":
+
+            return
+                "Azure AD Government: Fairfax";
+
+
+        case "WW":
+
+            return
+                "Azure AD Global";
+
+
+        case "NA":
+
+            return
+                "Azure AD Global: North America";
+
+
+        case "EU":
+
+            return
+                "Azure AD Global: Europe";
+
+
+        case "AS":
+
+            return
+                "Azure AD Global: Asia-Pacific";
+
+
+        case "OC":
+
+            return
+                "Azure AD Global: Oceania";
+
+
+        case "DE":
+
+            return
+                "Azure AD Germany";
+
+
+        default:
+
+            return
+                "Unknown / Other";
+
+    }
+
+}
+
+
+
+/* =========================================================
+   TENANT SCOPE
+========================================================= */
+
+function getTenantScope(data) {
+
+
+    switch (
+        data
+            .tenant_region_sub_scope
+    ) {
+
+
+        case "DOD":
+
+            return
+                "DOD";
+
+
+        case "DODCON":
+
+            return
+                "GCC High";
+
+
+        case "GCC":
+
+            return
+                "GCC";
+
+
+        default:
+
+            return
+                "Not applicable";
+
+    }
+
+}
+
+
+
+/* =========================================================
+   SHOW FOUND
+========================================================= */
+
+function showTenantFound(info) {
+
+
+    const status =
+        document.getElementById(
+            "statusCard"
+        );
+
+
+    status.style.display =
+        "block";
+
+
+    status.className =
+        "status-card success";
+
+
+    document
+        .getElementById(
+            "statusTitle"
+        )
+        .innerHTML =
+            "✓ Microsoft Tenant đã tồn tại";
+
+
+    document
+        .getElementById(
+            "statusMessage"
+        )
+        .innerHTML =
+            `
+            Đã tìm thấy Tenant
+            `;
+
+
+    setText(
+        "tenantName",
+        info.domain
+    );
+
+
+    setText(
+        "tenantId",
+        info.tenantId
+    );
+
+
+    setText(
+        "issuer",
+        info.issuer
+    );
+
+
+    setText(
+        "cloudInstance",
+        info.cloudInstance
+    );
+
+
+    setText(
+        "authorizationEndpoint",
+        info.authorizationEndpoint
+    );
+
+
+    setText(
+        "tokenEndpoint",
+        info.tokenEndpoint
+    );
+
+
+    setText(
+        "deviceAuthorizationEndpoint",
+        info.deviceAuthorizationEndpoint
+    );
+
+
+    setText(
+        "userInfoEndpoint",
+        info.userInfoEndpoint
+    );
+
+
+    setText(
+        "jwksUri",
+        info.jwksUri
+    );
+
+
+    setText(
+        "endSessionEndpoint",
+        info.endSessionEndpoint
+    );
+
+
+    setText(
+        "checkSession",
+        info.checkSession
+    );
+
+
+    setText(
+        "kerberosEndpoint",
+        info.kerberosEndpoint
+    );
+
+
+    document
+        .getElementById(
+            "rawJson"
+        )
+        .textContent =
+            JSON.stringify(
+                currentTenantData,
+                null,
+                2
+            );
+
+
+    document
+        .getElementById(
+            "resultContainer"
+        )
+        .style.display =
+            "block";
+
+}
+
+
+
+/* =========================================================
+   SHOW NOT FOUND
+========================================================= */
+
+function showTenantNotFound(
+    domain,
+    httpStatus
+) {
+
+
+    const status =
+        document.getElementById(
+            "statusCard"
+        );
+
+
+    status.style.display =
+        "block";
+
+
+    status.className =
+        "status-card error";
+
+
+    document
+        .getElementById(
+            "statusTitle"
+        )
+        .innerHTML =
+            "✕ Chưa tìm thấy Tenant";
+
+
+    document
+        .getElementById(
+            "statusMessage"
+        )
+        .innerHTML =
+            `
+
+            Không tìm thấy :
+
+            <br><br>
+
+            <b>${escapeHtml(domain)}</b>
+
+            <br><br>
+
+            Microsoft : HTTP ${httpStatus}.
+
+            <br><br>
+
+            Điều này thường có nghĩa Tenant/domain chưa tồn tại hoặc không hợp lệ.
+
+            `;
+
+}
+
+
+
+/* =========================================================
+   SHOW ERROR
+========================================================= */
+
+function showError(
+    message
+) {
+
+
+    const status =
+        document.getElementById(
+            "statusCard"
+        );
+
+
+    status.style.display =
+        "block";
+
+
+    status.className =
+        "status-card error";
+
+
+    document
+        .getElementById(
+            "statusTitle"
+        )
+        .innerHTML =
+            "⚠ Không thể kiểm tra";
+
+
+    document
+        .getElementById(
+            "statusMessage"
+        )
+        .textContent =
+            message;
+
+}
+
+
+
+/* =========================================================
+   HIDE RESULT
+========================================================= */
+
+function hideResult() {
+
+
+    document
+        .getElementById(
+            "statusCard"
+        )
+        .style.display =
+            "none";
+
+
+    document
+        .getElementById(
+            "resultContainer"
+        )
+        .style.display =
+            "none";
+
+
+    document
+        .getElementById(
+            "rawJsonSection"
+        )
+        .style.display =
+            "none";
+
+
+    currentTenantData =
+        null;
+
+
+    currentTenantInfo =
+        null;
+
+}
+
+
+
+/* =========================================================
+   SET TEXT
+========================================================= */
+
+function setText(
+    id,
+    value
+) {
+
+
+    document
+        .getElementById(
+            id
+        )
+        .textContent =
+            value ||
+            "Not available";
+
+}
+
+
+
+/* =========================================================
+   ARRAY TO TEXT
+========================================================= */
+
+function arrayToText(
+    array
+) {
+
+
+    if (
+
+        !array ||
+
+        !Array.isArray(
+            array
+        ) ||
+
+        array.length === 0
+
+    ) {
+
+
+        return
+            "Not available";
+
+    }
+
+
+    return
+        array.join(
+            ", "
+        );
+
+}
+
+
+
+/* =========================================================
+   COPY TENANT ID
+========================================================= */
+
+async function copyTenantId() {
+
+
+    if (
+
+        !currentTenantInfo ||
+
+        !currentTenantInfo.tenantId
+
+    ) {
+
+        return;
+
+    }
+
+
+    await copyText(
+        currentTenantInfo.tenantId
+    );
+
+
+    alert(
+        "Đã copy Tenant ID!"
+    );
+
+}
+
+
+
+/* =========================================================
+   COPY ALL
+========================================================= */
+
+async function copyAllResults() {
+
+
+    if (
+        !currentTenantInfo
+    ) {
+
+        return;
+
+    }
+
+
+    const i =
+        currentTenantInfo;
+
+
+    const text =
+`
+MICROSOFT TENANT INSPECTOR
+==========================
+
+Search String:
+${i.domain}
+
+Tenant ID:
+${i.tenantId}
+
+Cloud Instance:
+${i.cloudInstance}
+
+Issuer:
+${i.issuer}
+
+AUTHENTICATION ENDPOINTS
+==========================
+
+Authorization Endpoint:
+${i.authorizationEndpoint}
+
+Token Endpoint:
+${i.tokenEndpoint}
+
+Device Authorization Endpoint:
+${i.deviceAuthorizationEndpoint}
+
+UserInfo Endpoint:
+${i.userInfoEndpoint}
+
+JWKS URI:
+${i.jwksUri}
+
+End Session Endpoint:
+${i.endSessionEndpoint}
+
+Check Session:
+${i.checkSession}
+
+Kerberos Endpoint:
+${i.kerberosEndpoint}
+`;
+
+
+    await copyText(
+        text
+    );
+
+
+    alert(
+        "Đã copy toàn bộ kết quả!"
+    );
+
+}
+
+
+
+/* =========================================================
+   COPY TEXT
+========================================================= */
+
+async function copyText(
+    text
+) {
+
+
+    try {
+
+
+        await navigator
+            .clipboard
+            .writeText(
+                text
+            );
+
+
+    }
+
+
+    catch (error) {
+
+
+        const textarea =
+            document.createElement(
+                "textarea"
+            );
+
+
+        textarea.value =
+            text;
+
+
+        textarea.style.position =
+            "fixed";
+
+
+        textarea.style.left =
+            "-9999px";
+
+
+        document
+            .body
+            .appendChild(
+                textarea
+            );
+
+
+        textarea.select();
+
+
+        document.execCommand(
+            "copy"
+        );
+
+
+        textarea.remove();
+
+    }
+
+}
+
+
+
+/* =========================================================
+   RAW JSON
+========================================================= */
+
+function toggleRawJson() {
+
+
+    const section =
+        document.getElementById(
+            "rawJsonSection"
+        );
+
+
+    if (
+
+        section.style.display ===
+        "none"
+
+    ) {
+
+
+        section.style.display =
+            "block";
+
+
+    }
+
+    else {
+
+
+        section.style.display =
+            "none";
+
+    }
+
+}
+
+
+
+/* =========================================================
+   SAVE SEARCH HISTORY
+========================================================= */
+
+function saveSearchHistory() {
+
+
+    if (
+        !currentTenantInfo
+    ) {
+
+        return;
+
+    }
+
+
+    let history =
+        [];
+
+
+    try {
+
+
+        history =
+            JSON.parse(
+
+                localStorage.getItem(
+                    "hachihiTenantHistory"
+                )
+
+            ) || [];
+
+
+    }
+
+    catch {
+
+        history =
+            [];
+
+    }
+
+
+    history.unshift(
+
+        {
+
+            date:
+                new Date()
+                    .toISOString(),
+
+            domain:
+                currentTenantInfo.domain,
+
+            tenantId:
+                currentTenantInfo.tenantId,
+
+            region:
+                currentTenantInfo.azureInstance
+
+        }
+
+    );
+
+
+    /*
+        Chỉ giữ 50 kết quả gần nhất
+    */
+
+    history =
+        history.slice(
+            0,
+            50
+        );
+
+
+    localStorage.setItem(
+
+        "hachihiTenantHistory",
+
+        JSON.stringify(
+            history
+        )
+
+    );
+
+
+    alert(
+        "Đã lưu kết quả trên trình duyệt này!"
+    );
+
+}
+
+
+
+/* =========================================================
+   HTML ESCAPE
+========================================================= */
+
+function escapeHtml(
+    text
+) {
+
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+
+    div.textContent =
+        text;
+
+
+    return
+        div.innerHTML;
+
+}
+
+
 </script>
 
 </body>
